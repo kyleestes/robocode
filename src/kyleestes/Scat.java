@@ -29,7 +29,9 @@ public class Scat extends AdvancedRobot {
 	 * @see robocode.Robot#run()
 	 */
 	public void run() {
-		setTurnGunRight(99999);
+		// divorce radar movement from gun movement
+		setAdjustRadarForGunTurn(true);
+		setTurnRadarRight(99999);
 	}
 
 	/*
@@ -53,7 +55,7 @@ public class Scat extends AdvancedRobot {
 
 		// When a bot is spotted, sweep the gun and radar.
 		gunDirection = -gunDirection;
-		setTurnGunRight(99999 * gunDirection);
+		setTurnRadarRight(99999 * gunDirection);
 
 		// Track the energy level.
 		previousEnergy = e.getEnergy();
