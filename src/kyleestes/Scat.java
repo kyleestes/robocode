@@ -9,7 +9,7 @@ public class Scat extends AdvancedRobot {
 	/**
 	 * Represents the enemy robot's current energy level.
 	 */
-	private double previousEnergy = 100;
+	private double enemyCurrentEnergyLevel = 100;
 
 	/**
 	 * Represents a movement direction, where positive is ahead and negative is
@@ -54,7 +54,7 @@ public class Scat extends AdvancedRobot {
 		setTurnRight(e.getBearing() + 90 - 30 * movementDirection);
 
 		// If the bot has small energy drop, assume it fired.
-		double changeInEnergy = previousEnergy - e.getEnergy();
+		double changeInEnergy = enemyCurrentEnergyLevel - e.getEnergy();
 
 		if (changeInEnergy > 0 && changeInEnergy <= 3) {
 			// Dodge!
@@ -67,8 +67,8 @@ public class Scat extends AdvancedRobot {
 		gunDirection = -gunDirection;
 		setTurnRadarRight(99999 * gunDirection);
 
-		// Track the energy level.
-		previousEnergy = e.getEnergy();
+		// Update the enemy's current energy level.
+		enemyCurrentEnergyLevel = e.getEnergy();
 		
 		/* Use Linear Targeting to fire at the projected position of the enemy.
 		 * See:
