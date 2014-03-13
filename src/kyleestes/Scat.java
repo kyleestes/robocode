@@ -23,6 +23,8 @@ public class Scat extends AdvancedRobot {
 	 */
 	int gunDirection = 1;
 
+	private double bulletPower = 3;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -75,7 +77,6 @@ public class Scat extends AdvancedRobot {
 
 		// Radar code
 		 
-	    double bulletPower = 3;
 	    double headOnBearing = getHeadingRadians() + e.getBearingRadians();
 	    double linearBearing = headOnBearing + Math.asin(e.getVelocity() / Rules.getBulletSpeed(bulletPower) * Math.sin(e.getHeadingRadians() - headOnBearing));
 	    setTurnGunRightRadians(Utils.normalRelativeAngle(linearBearing - getGunHeadingRadians()));
