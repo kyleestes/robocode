@@ -29,15 +29,19 @@ public class Scat extends AdvancedRobot {
 	private double bulletPower = 3;
 
 	/**
+	 * Run the robot.
+	 * 
+	 * <p>
 	 * Note that there is no need for an infinite loop, nor is there a need to
-	 * call @see {@link robocode.AdvancedRobot#execute()}. The initial scan will
-	 * locate the enemy robot, which will trigger the event handler. The event
-	 * handler moves our robot, points our gun and radar, and continuously
+	 * call {@link robocode.AdvancedRobot#execute() execute}. The initial scan
+	 * will locate the enemy robot, which will trigger the event handler. The
+	 * event handler moves our robot, points our gun and radar, and continuously
 	 * re-generates new scan events, thus causing the event handler to repeat
-	 * continuously. The event handler does not call @see
-	 * {@link robocode.AdvancedRobot#execute()} either, because @see
-	 * {@link robocode.AdvancedRobot#execute()} is called by default when the
-	 * turn (i.e., tick) is complete.
+	 * continuously. The event handler does not call
+	 * {@link robocode.AdvancedRobot#execute() execute} either, because
+	 * {@link robocode.AdvancedRobot#execute() execute} is called by default
+	 * when the turn (i.e., tick) is complete.
+	 * </p>
 	 * 
 	 * @see robocode.Robot#run()
 	 */
@@ -52,10 +56,18 @@ public class Scat extends AdvancedRobot {
 		setTurnRadarRight(99999);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Handle scanned robot events.
+	 * 
+	 * <p>
+	 * Performs linear targeting to fire at the projected position of the enemy.
+	 * </p>
 	 * 
 	 * @see robocode.Robot#onScannedRobot(robocode.ScannedRobotEvent)
+	 * @see <a href='http://robowiki.net/wiki/Linear_Targeting'>Linear
+	 *      Targeting</a>
+	 * @see <a href='http://robowiki.net/wiki/Maximum_Escape_Angle'>Maximum
+	 *      Escape Angle</a>
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Stay at right angles to the opponent.
@@ -77,14 +89,6 @@ public class Scat extends AdvancedRobot {
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
-
-		/*
-		 * Use Linear Targeting to fire at the projected position of the enemy.
-		 * See: - Linear Targeting http://robowiki.net/wiki/Linear_Targeting -
-		 * Maximum Escape Angle http://robowiki.net/wiki/Maximum_Escape_Angle
-		 */
-
-		// Radar code
 
 		double headOnBearing = getHeadingRadians() + e.getBearingRadians();
 		double linearBearing = headOnBearing
