@@ -1,7 +1,9 @@
 package kyleestes;
 
 import robocode.AdvancedRobot;
+import robocode.Rules;
 import robocode.ScannedRobotEvent;
+import robocode.util.Utils;
 
 public class Scat extends AdvancedRobot {
 	/**
@@ -53,10 +55,23 @@ public class Scat extends AdvancedRobot {
 		gunDirection = -gunDirection;
 		setTurnGunRight(99999 * gunDirection);
 
-		// Fire directly at target.
-		fire(2);
-
 		// Track the energy level.
 		previousEnergy = e.getEnergy();
+		
+		/* Use Linear Targeting to fire at the projected position of the enemy.
+		 * See:
+		 *  - Linear Targeting
+		 *    http://robowiki.net/wiki/Linear_Targeting
+		 *  - Maximum Escape Angle
+		 *    http://robowiki.net/wiki/Maximum_Escape_Angle 
+		 */
+
+		// Radar code
+		 
+	    double bulletPower = 3;
+	    double headOnBearing = getHeadingRadians() + e.getBearingRadians();
+	    double linearBearing = headOnBearing + Math.asin(e.getVelocity() / Rules.getBulletSpeed(bulletPower) * Math.sin(e.getHeadingRadians() - headOnBearing));
+	    setTurnGunRightRadians(Utils.normalRelativeAngle(linearBearing - getGunHeadingRadians()));
+	    setFire(bulletPower);
 	}
 }
