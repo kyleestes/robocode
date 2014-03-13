@@ -5,7 +5,7 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
-public class Scat extends AdvancedRobot {
+public class BallGagBot extends AdvancedRobot {
 	/**
 	 * Represents the enemy robot's current energy level.
 	 */
