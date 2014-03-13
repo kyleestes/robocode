@@ -29,6 +29,9 @@ public class Scat extends AdvancedRobot {
 	 * @see robocode.Robot#run()
 	 */
 	public void run() {
+		// Decouple the gun movement from the tank movement.
+		setAdjustGunForRobotTurn(true);
+		
 		// Decouple the radar movement from the gun movement.
 		setAdjustRadarForGunTurn(true);
 		
