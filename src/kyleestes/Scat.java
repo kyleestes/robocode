@@ -58,7 +58,7 @@ public class Scat extends AdvancedRobot {
 			setAhead((e.getDistance() / 4 + 25) * movementDirection);
 		}
 
-		// When a bot is spotted, sweep the gun and radar.
+		// When an enemy is spotted, sweep the radar.
 		gunDirection = -gunDirection;
 		setTurnRadarRight(99999 * gunDirection);
 
