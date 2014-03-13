@@ -22,7 +22,10 @@ public class Scat extends AdvancedRobot {
 	 * is counter-clockwise.
 	 */
 	int gunDirection = 1;
-
+	
+	/**
+	 * Represents the power of the bullets we fire.
+	 */
 	private double bulletPower = 3;
 
 	/*
