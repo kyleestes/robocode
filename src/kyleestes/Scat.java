@@ -12,17 +12,17 @@ public class Scat extends AdvancedRobot {
 	private double enemyCurrentEnergyLevel = 100;
 
 	/**
-	 * Represents a tank bearing modulator for our robot, where positive is clockwise and negative is
-	 * counter-clockwise.
+	 * Represents a tank bearing modulator for our robot, where positive is
+	 * clockwise and negative is counter-clockwise.
 	 */
 	private int tankBearingModulator = 1;
 
 	/**
-	 * Represents a gun bearing modulator for our robot, where positive is clockwise and negative
-	 * is counter-clockwise.
+	 * Represents a gun bearing modulator for our robot, where positive is
+	 * clockwise and negative is counter-clockwise.
 	 */
 	private int gunBearingModulator = 1;
-	
+
 	/**
 	 * Represents the power of the bullets we fire.
 	 */
@@ -36,10 +36,10 @@ public class Scat extends AdvancedRobot {
 	public void run() {
 		// Decouple the gun movement from the tank movement.
 		setAdjustGunForRobotTurn(true);
-		
+
 		// Decouple the radar movement from the gun movement.
 		setAdjustRadarForGunTurn(true);
-		
+
 		// Perform an initial scan.
 		setTurnRadarRight(99999);
 	}
@@ -69,20 +69,21 @@ public class Scat extends AdvancedRobot {
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
-		
-		/* Use Linear Targeting to fire at the projected position of the enemy.
-		 * See:
-		 *  - Linear Targeting
-		 *    http://robowiki.net/wiki/Linear_Targeting
-		 *  - Maximum Escape Angle
-		 *    http://robowiki.net/wiki/Maximum_Escape_Angle 
+
+		/*
+		 * Use Linear Targeting to fire at the projected position of the enemy.
+		 * See: - Linear Targeting http://robowiki.net/wiki/Linear_Targeting -
+		 * Maximum Escape Angle http://robowiki.net/wiki/Maximum_Escape_Angle
 		 */
 
 		// Radar code
-		 
-	    double headOnBearing = getHeadingRadians() + e.getBearingRadians();
-	    double linearBearing = headOnBearing + Math.asin(e.getVelocity() / Rules.getBulletSpeed(bulletPower) * Math.sin(e.getHeadingRadians() - headOnBearing));
-	    setTurnGunRightRadians(Utils.normalRelativeAngle(linearBearing - getGunHeadingRadians()));
-	    setFire(bulletPower);
+
+		double headOnBearing = getHeadingRadians() + e.getBearingRadians();
+		double linearBearing = headOnBearing
+				+ Math.asin(e.getVelocity() / Rules.getBulletSpeed(bulletPower)
+						* Math.sin(e.getHeadingRadians() - headOnBearing));
+		setTurnGunRightRadians(Utils.normalRelativeAngle(linearBearing
+				- getGunHeadingRadians()));
+		setFire(bulletPower);
 	}
 }
