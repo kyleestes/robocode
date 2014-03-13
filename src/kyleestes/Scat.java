@@ -29,6 +29,16 @@ public class Scat extends AdvancedRobot {
 	private double bulletPower = 3;
 
 	/**
+	 * Represents the number of radians in a circle.
+	 */
+	private static final double RADIANS_IN_CIRCLE = Math.PI * 2;
+	
+	/**
+	 * Represents the arclength of our radar scans.
+	 */
+	private static final double RADAR_SCAN_ARCLENGTH = RADIANS_IN_CIRCLE + Math.PI / 2;
+	
+	/**
 	 * Run the robot.
 	 * 
 	 * <p>
@@ -53,7 +63,7 @@ public class Scat extends AdvancedRobot {
 		setAdjustRadarForGunTurn(true);
 
 		// Perform an initial scan.
-		setTurnRadarRight(99999);
+		setTurnRadarRightRadians(RADAR_SCAN_ARCLENGTH);
 	}
 
 	/**
@@ -85,7 +95,7 @@ public class Scat extends AdvancedRobot {
 
 		// When an enemy is spotted, sweep the radar.
 		gunBearingModulator = -gunBearingModulator;
-		setTurnRadarRight(99999 * gunBearingModulator);
+		setTurnRadarRightRadians(RADAR_SCAN_ARCLENGTH * gunBearingModulator);
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
