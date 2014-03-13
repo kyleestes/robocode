@@ -17,16 +17,17 @@ public class BallGagBot extends AdvancedRobot {
 	private double enemyCurrentEnergyLevel = 100;
 
 	/**
-	 * Represents a tank bearing modulator for our robot, where positive is
-	 * clockwise and negative is counter-clockwise.
+	 * Determines whether to rotate the tank nose toward or away from the enemy.
+	 * This also affects whether the robot will move forward or backward when
+	 * dodging.
 	 */
-	private int tankBearingModulator = 1;
+	private boolean adjustHeadingTowardEnemy = true;
 
 	/**
-	 * Represents a gun bearing modulator for our robot, where positive is
+	 * Represents a radar bearing modulator for our robot, where positive is
 	 * clockwise and negative is counter-clockwise.
 	 */
-	private int gunBearingModulator = 1;
+	private int radarBearingModulator = 1;
 
 	/**
 	 * Represents the power of the bullets we fire.
@@ -43,6 +44,18 @@ public class BallGagBot extends AdvancedRobot {
 	 */
 	private static final double RADAR_SCAN_ARC_LENGTH = RADIANS_IN_CIRCLE
 			+ Math.PI / 2;
+
+	/**
+	 * Represents the magnitude of the angle needed to face the tank
+	 * perpendicular to an enemy when the tank is directly facing the enemy.
+	 */
+	private static final double ADJUST_HEADING_TO_PERPENDICULAR = Math.PI / 2;
+
+	/**
+	 * Represents the magnitude of the angle to adjust the tank slightly
+	 * off-perpendicular.
+	 */
+	private static final double ADJUST_HEADING = Math.PI / 6;
 
 	/**
 	 * Run the robot.
@@ -86,32 +99,99 @@ public class BallGagBot extends AdvancedRobot {
 	 *      Escape Angle</a>
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		// Stay at right angles to the opponent.
-		setTurnRight(e.getBearing() + 90 - 30 * tankBearingModulator);
+		/*
+		 * Lay in a new heading based on our bearing to the enemy robot.
+		 */
 
-		// If the bot has small energy drop, assume it fired.
-		double changeInEnergy = enemyCurrentEnergyLevel - e.getEnergy();
+		// Determine a heading for the tank perpendicular to our bearing to the
+		// enemy. In other words, rotate the nose of the tank such that the
+		// enemy is directly port-side.
+		double newTankHeading = e.getBearingRadians()
+				+ ADJUST_HEADING_TO_PERPENDICULAR;
 
-		if (changeInEnergy > 0 && changeInEnergy <= 3) {
-			// Dodge!
-			tankBearingModulator = -tankBearingModulator;
-
-			setAhead((e.getDistance() / 4 + 25) * tankBearingModulator);
+		if (adjustHeadingTowardEnemy) {
+			// Turn the nose of the tank towards the enemy. If the enemy fires,
+			// we will want to dodge by moving forward so as to get closer to
+			// the enemy.
+			newTankHeading = newTankHeading - ADJUST_HEADING;
+		} else {
+			// Turn the nose of the tank away from the enemy. If the enemy
+			// fires, we will want to dodge by moving backward so as to get
+			// closer to the enemy.
+			newTankHeading = newTankHeading + ADJUST_HEADING;
 		}
 
-		// When an enemy is spotted, sweep the radar.
-		gunBearingModulator = -gunBearingModulator;
-		setTurnRadarRightRadians(RADAR_SCAN_ARC_LENGTH * gunBearingModulator);
+		// Lay in the new heading.
+		setTurnRightRadians(newTankHeading);
+
+		/*
+		 * Determine if the enemy fired a shot, and if so, dodge.
+		 */
+
+		// Determine the change in the enemy's energy level.
+		double deltaEnemyEnergyLevel = enemyCurrentEnergyLevel - e.getEnergy();
+
+		// If the enemy's energy level has dropped, assume it fired. Note that
+		// these energy drops may be false-positives from the enemy hitting a
+		// wall or another robot. For now, it is good enough.
+		if (deltaEnemyEnergyLevel >= Rules.MIN_BULLET_POWER
+				&& deltaEnemyEnergyLevel <= Rules.MAX_BULLET_POWER) {
+
+			// Determine a distance to move ahead in order to dodge the bullet.
+			double moveDistance = e.getDistance() / 4 + 25;
+
+			// Next time, switch things up to keep the enemy guessing. This
+			// achieves a sort of see-saw effect when dodging successive
+			// bullets.
+			adjustHeadingTowardEnemy = !adjustHeadingTowardEnemy;
+
+			// If the nose of the tank is pointing away from the enemy...
+			if (!adjustHeadingTowardEnemy) {
+				// Negate the move distance and cause the tank to move backward
+				// instead of forward.
+				moveDistance = -moveDistance;
+			}
+
+			// Engage.
+			setAhead(moveDistance);
+		}
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
 
-		double headOnBearing = getHeadingRadians() + e.getBearingRadians();
-		double linearBearing = headOnBearing
+		/*
+		 * Scan the enemy with the radar.
+		 */
+
+		// Whichever way the radar was scanning, reverse it so as to sweep back
+		// across the enemy.
+		radarBearingModulator = -radarBearingModulator;
+
+		// Sweep the radar.
+		setTurnRadarRightRadians(RADAR_SCAN_ARC_LENGTH * radarBearingModulator);
+
+		/*
+		 * Fire at the enemy's future position as determined by a linear
+		 * extrapolation.
+		 */
+
+		// Determine a new heading for the gun that points at the enemy's
+		// current location.
+		double newGunHeading = getHeadingRadians() + e.getBearingRadians();
+
+		// If we shoot with the gun at this heading, and the enemy is moving,
+		// the bullet will miss. We need to adjust the gun heading so that it
+		// points at the enemy's future location at the time a bullet fired from
+		// the gun would arrive at that location.
+		newGunHeading = newGunHeading
 				+ Math.asin(e.getVelocity() / Rules.getBulletSpeed(bulletPower)
-						* Math.sin(e.getHeadingRadians() - headOnBearing));
-		setTurnGunRightRadians(Utils.normalRelativeAngle(linearBearing
+						* Math.sin(e.getHeadingRadians() - newGunHeading));
+
+		// Aim the gun.
+		setTurnGunRightRadians(Utils.normalRelativeAngle(newGunHeading
 				- getGunHeadingRadians()));
+
+		// Fire.
 		setFire(bulletPower);
 	}
 }
