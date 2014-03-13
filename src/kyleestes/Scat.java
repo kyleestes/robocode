@@ -12,16 +12,16 @@ public class Scat extends AdvancedRobot {
 	private double enemyCurrentEnergyLevel = 100;
 
 	/**
-	 * Represents a movement direction, where positive is ahead and negative is
-	 * behind.
+	 * Represents a tank bearing modulator for our robot, where positive is clockwise and negative is
+	 * counter-clockwise.
 	 */
-	private int movementDirection = 1;
+	private int tankBearingModulator = 1;
 
 	/**
-	 * Represents a gun turn direction, where positive is clockwise and negative
+	 * Represents a gun bearing modulator for our robot, where positive is clockwise and negative
 	 * is counter-clockwise.
 	 */
-	private int gunDirection = 1;
+	private int gunBearingModulator = 1;
 	
 	/**
 	 * Represents the power of the bullets we fire.
@@ -51,21 +51,21 @@ public class Scat extends AdvancedRobot {
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Stay at right angles to the opponent.
-		setTurnRight(e.getBearing() + 90 - 30 * movementDirection);
+		setTurnRight(e.getBearing() + 90 - 30 * tankBearingModulator);
 
 		// If the bot has small energy drop, assume it fired.
 		double changeInEnergy = enemyCurrentEnergyLevel - e.getEnergy();
 
 		if (changeInEnergy > 0 && changeInEnergy <= 3) {
 			// Dodge!
-			movementDirection = -movementDirection;
+			tankBearingModulator = -tankBearingModulator;
 
-			setAhead((e.getDistance() / 4 + 25) * movementDirection);
+			setAhead((e.getDistance() / 4 + 25) * tankBearingModulator);
 		}
 
 		// When an enemy is spotted, sweep the radar.
-		gunDirection = -gunDirection;
-		setTurnRadarRight(99999 * gunDirection);
+		gunBearingModulator = -gunBearingModulator;
+		setTurnRadarRight(99999 * gunBearingModulator);
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
