@@ -9,19 +9,19 @@ public class Scat extends AdvancedRobot {
 	/**
 	 * Represents the enemy robot's current energy level.
 	 */
-	double previousEnergy = 100;
+	private double previousEnergy = 100;
 
 	/**
 	 * Represents a movement direction, where positive is ahead and negative is
 	 * behind.
 	 */
-	int movementDirection = 1;
+	private int movementDirection = 1;
 
 	/**
 	 * Represents a gun turn direction, where positive is clockwise and negative
 	 * is counter-clockwise.
 	 */
-	int gunDirection = 1;
+	private int gunDirection = 1;
 	
 	/**
 	 * Represents the power of the bullets we fire.
