@@ -37,12 +37,13 @@ public class BallGagBot extends AdvancedRobot {
 	 * Represents the number of radians in a circle.
 	 */
 	private static final double RADIANS_IN_CIRCLE = Math.PI * 2;
-	
+
 	/**
 	 * Represents the arc length of our radar scans.
 	 */
-	private static final double RADAR_SCAN_ARC_LENGTH = RADIANS_IN_CIRCLE + Math.PI / 2;
-	
+	private static final double RADAR_SCAN_ARC_LENGTH = RADIANS_IN_CIRCLE
+			+ Math.PI / 2;
+
 	/**
 	 * Run the robot.
 	 * 
