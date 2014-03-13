@@ -5,6 +5,11 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
+/**
+ * This robot likes bondage and wears a ball gag during battle.
+ * 
+ * @author Kyle Estes
+ */
 public class BallGagBot extends AdvancedRobot {
 	/**
 	 * Represents the enemy robot's current energy level.
@@ -34,9 +39,9 @@ public class BallGagBot extends AdvancedRobot {
 	private static final double RADIANS_IN_CIRCLE = Math.PI * 2;
 	
 	/**
-	 * Represents the arclength of our radar scans.
+	 * Represents the arc length of our radar scans.
 	 */
-	private static final double RADAR_SCAN_ARCLENGTH = RADIANS_IN_CIRCLE + Math.PI / 2;
+	private static final double RADAR_SCAN_ARC_LENGTH = RADIANS_IN_CIRCLE + Math.PI / 2;
 	
 	/**
 	 * Run the robot.
@@ -63,7 +68,7 @@ public class BallGagBot extends AdvancedRobot {
 		setAdjustRadarForGunTurn(true);
 
 		// Perform an initial scan.
-		setTurnRadarRightRadians(RADAR_SCAN_ARCLENGTH);
+		setTurnRadarRightRadians(RADAR_SCAN_ARC_LENGTH);
 	}
 
 	/**
@@ -95,7 +100,7 @@ public class BallGagBot extends AdvancedRobot {
 
 		// When an enemy is spotted, sweep the radar.
 		gunBearingModulator = -gunBearingModulator;
-		setTurnRadarRightRadians(RADAR_SCAN_ARCLENGTH * gunBearingModulator);
+		setTurnRadarRightRadians(RADAR_SCAN_ARC_LENGTH * gunBearingModulator);
 
 		// Update the enemy's current energy level.
 		enemyCurrentEnergyLevel = e.getEnergy();
