@@ -28,8 +28,16 @@ public class Scat extends AdvancedRobot {
 	 */
 	private double bulletPower = 3;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Note that there is no need for an infinite loop, nor is there a need to
+	 * call @see {@link robocode.AdvancedRobot#execute()}. The initial scan will
+	 * locate the enemy robot, which will trigger the event handler. The event
+	 * handler moves our robot, points our gun and radar, and continuously
+	 * re-generates new scan events, thus causing the event handler to repeat
+	 * continuously. The event handler does not call @see
+	 * {@link robocode.AdvancedRobot#execute()} either, because @see
+	 * {@link robocode.AdvancedRobot#execute()} is called by default when the
+	 * turn (i.e., tick) is complete.
 	 * 
 	 * @see robocode.Robot#run()
 	 */
