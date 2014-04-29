@@ -1,5 +1,7 @@
 package kyleestes;
 
+import java.util.Random;
+
 import robocode.AdvancedRobot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
@@ -16,12 +18,7 @@ public class BallGagBot extends AdvancedRobot {
 	 */
 	private double enemyCurrentEnergyLevel = 100;
 
-	/**
-	 * Determines whether to rotate the tank nose toward or away from the enemy.
-	 * This also affects whether the robot will move forward or backward when
-	 * dodging.
-	 */
-	private boolean adjustHeadingTowardEnemy = true;
+	Random generator = new Random();
 
 	/**
 	 * Represents a radar bearing modulator for our robot, where positive is
@@ -109,12 +106,13 @@ public class BallGagBot extends AdvancedRobot {
 		double newTankHeading = e.getBearingRadians()
 				+ ADJUST_HEADING_TO_PERPENDICULAR;
 
-		if (adjustHeadingTowardEnemy) {
+		if (adjustHeadingTowardEnemy()) {
 			// Turn the nose of the tank towards the enemy. If the enemy fires,
 			// we will want to dodge by moving forward so as to get closer to
 			// the enemy.
 			newTankHeading = newTankHeading - ADJUST_HEADING;
-		} else {
+		} 
+		else {
 			// Turn the nose of the tank away from the enemy. If the enemy
 			// fires, we will want to dodge by moving backward so as to get
 			// closer to the enemy.
@@ -140,13 +138,8 @@ public class BallGagBot extends AdvancedRobot {
 			// Determine a distance to move ahead in order to dodge the bullet.
 			double moveDistance = e.getDistance() / 4 + 25;
 
-			// Next time, switch things up to keep the enemy guessing. This
-			// achieves a sort of see-saw effect when dodging successive
-			// bullets.
-			adjustHeadingTowardEnemy = !adjustHeadingTowardEnemy;
-
 			// If the nose of the tank is pointing away from the enemy...
-			if (!adjustHeadingTowardEnemy) {
+			if (!adjustHeadingTowardEnemy()) {
 				// Negate the move distance and cause the tank to move backward
 				// instead of forward.
 				moveDistance = -moveDistance;
@@ -193,5 +186,16 @@ public class BallGagBot extends AdvancedRobot {
 
 		// Fire.
 		setFire(bulletPower);
+	}
+
+	/**
+	 * Determines whether to rotate the tank nose toward or away from the enemy.
+	 * This also affects whether the robot will move forward or backward when
+	 * dodging.
+	 * 
+	 * @return True to turn the nose of the tank towards the enemy, false to turn the nose of the tank away from the enemy.
+	 */
+	private boolean adjustHeadingTowardEnemy() {
+		return generator.nextInt(2) == 1 ? true : false;
 	}
 }
